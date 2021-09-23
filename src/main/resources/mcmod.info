@@ -1,8 +1,8 @@
 [
   {
-    "modid": "forgetemplate",
-    "name": "ForgeTemplate",
-    "description": "An example template",
+    "modid": "gravyrewardclaim",
+    "name": "Gravy's Reward Claim",
+    "description": "Allows you to claim Hypixel rewards in-game.",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "",
