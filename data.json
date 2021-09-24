@@ -2,7 +2,8 @@
   "imageTypes": {
     "small": {
       "width": 50,
-      "height": 50
+      "height": 50,
+      "center": true
     }
   },
   "textures": {
