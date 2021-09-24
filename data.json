@@ -1,0 +1,115 @@
+{
+  "textures": {
+    "coins": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/COINS.png"
+    },
+    "dust": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/DUST.png"
+    },
+    "experience": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/EXPERIENCE.png"
+    },
+    "mystery_box": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/MYSTERY_BOX.png"
+    },
+    "souls": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/SOULS.png"
+    },
+    "gift_box": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/GIFT_BOX.png"
+    },
+    "adsense_token": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/ADSENSE_TOKEN.png"
+    },
+    "tokens": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/TOKENS_LEGACY.png"
+    },
+    "housing_package": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/HOUSING_RED.png"
+    },
+    "add_vanity_emote": {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/VANITY_EMOTE.png"
+    },
+    "add_vanity_taunt" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/VANITY_GESTURE.png"
+    },
+    "add_vanity_suit" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_base/VANITY_SUIT.png"
+    },
+    "housing_package_red_treasure_chest" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/RED_TREASURE_CHEST.png",
+      "height": 100
+    },
+    "housing_package_blue_treasure_chest" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/BLUE_TREASURE_CHEST.png",
+      "height": 100
+    },
+    "housing_package_green_treasure_chest" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/GREEN_TREASURE_CHEST.png",
+      "height": 100
+    },
+    "housing_package_gold_nugget" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/GOLD_NUGGET.png",
+      "height": 100
+    },
+    "housing_package_pot_o'_gold" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/POT_O_GOLD.png ",
+      "height": 100
+    },
+    "housing_package_rubik's_cube" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/RUBIKS_CUBE.png",
+      "height": 100
+    },
+    "housing_package_piggy_bank" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/PIGGY_BANK.png",
+      "height": 100
+    },
+    "housing_package_health_potion" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/HEALTH_POTION.png",
+      "height": 100
+    },
+    "housing_package_coin_bag" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/COIN_BAG.png",
+      "height": 100
+    },
+    "housing_package_ornamental_helmet" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/ORNAMENTAL_HELMET.png",
+      "height": 100
+    },
+    "housing_package_pocket_galaxy" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/POCKET_GALAXY.png",
+      "height": 100
+    },
+    "housing_package_mystic_pearl" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/MYSTIC_PEARL.png",
+      "height": 100
+    },
+    "housing_package_agility_potion" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/AGILITY_POTION.png",
+      "height": 100
+    },
+    "housing_package_golden_chalice" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/GOLDEN_CHALICE.png",
+      "height": 100
+    },
+    "housing_package_jewelery_box" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/JEWELERY_BOX.png",
+      "height": 100
+    },
+    "housing_package_crown" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/CROWN.png",
+      "height": 100
+    },
+    "housing_package_molten_core" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/MOLTEN_CORE.png",
+      "height": 100
+    },
+    "housing_package_mana_potion" : {
+      "url": "https://raw.githubusercontent.com/Dance-Dog/RewardClaim/master/src/main/resources/assets/rewardclaim/textures/gui/reward_sub/housing_skull/MANA_POTION.png",
+      "height": 100
+    }
+  },
+  "rewardRegex": "Click the link to visit our website and claim your reward: https://rewards\\.hypixel\\.net/claim-reward/(?<id>[A-Za-z0-9]{8})",
+  "missedRewardRegex": "We noticed you haven't claimed your free Daily Reward yet!\\nTo choose your reward you have to click the link to visit our website! As a reminder, here's your link for today:  https://rewards\\.hypixel\\.net/claim-reward/(?<id>[A-Za-z0-9]{8})",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36"
+}
