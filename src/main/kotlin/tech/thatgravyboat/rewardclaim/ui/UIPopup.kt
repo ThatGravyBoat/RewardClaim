@@ -12,11 +12,16 @@ import gg.essential.elementa.utils.withAlpha
 import gg.essential.vigilance.gui.VigilancePalette
 import gg.essential.vigilance.gui.VigilancePalette.getBackground
 
-class UIPopup private constructor(title : String, text : String) : UIBlock(getBackground().withAlpha(200)) {
+class UIPopup private constructor(title: String, text: String) : UIBlock(getBackground().withAlpha(200)) {
 
     private val box: UIBlock
 
-    constructor(title : String, text : String, image : UIImage? = null, event : (UIComponent.(event: UIClickEvent) -> Unit), buttonText : String
+    constructor(
+        title: String,
+        text: String,
+        image: UIImage? = null,
+        event: (UIComponent.(event: UIClickEvent) -> Unit),
+        buttonText: String
     ) : this(title, text) {
 
         val btnText = UIText(buttonText, false)
@@ -25,9 +30,10 @@ class UIPopup private constructor(title : String, text : String) : UIBlock(getBa
         UIButton(image, width, CenterConstraint(), btnText, Alignment.MIDDLE).onMouseClick(event) childOf box
     }
 
-    constructor(title : String, text : String,
-                image1 : UIImage? = null, event1 : (UIComponent.(event: UIClickEvent) -> Unit), buttonText : String,
-                image2 : UIImage? = null, event2 : (UIComponent.(event: UIClickEvent) -> Unit), buttonText2 : String
+    constructor(
+        title: String, text: String,
+        image1: UIImage? = null, event1: (UIComponent.(event: UIClickEvent) -> Unit), buttonText: String,
+        image2: UIImage? = null, event2: (UIComponent.(event: UIClickEvent) -> Unit), buttonText2: String
     ) : this(title, text) {
 
         val btn1Text = UIText(buttonText, false)
@@ -37,8 +43,20 @@ class UIPopup private constructor(title : String, text : String) : UIBlock(getBa
 
         val width = btn1Width.coerceAtLeast(btn2Width)
 
-        UIButton(image1, width, CenterConstraint() - 5.percent(), btn1Text, Alignment.RIGHT).onMouseClick(event1) childOf box
-        UIButton(image2, width, CenterConstraint() + 5.percent(), btn2Text, Alignment.LEFT).onMouseClick(event2) childOf box
+        UIButton(
+            image1,
+            width,
+            CenterConstraint() - 5.percent(),
+            btn1Text,
+            Alignment.RIGHT
+        ).onMouseClick(event1) childOf box
+        UIButton(
+            image2,
+            width,
+            CenterConstraint() + 5.percent(),
+            btn2Text,
+            Alignment.LEFT
+        ).onMouseClick(event2) childOf box
     }
 
     init {

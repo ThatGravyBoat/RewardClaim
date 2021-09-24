@@ -16,16 +16,14 @@ import java.awt.Color
 import java.net.*
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 private val BUTTON_HOVER = Color(0, 212, 105)
 
-private val SECURITY_REGEX = Pattern.compile("window\\.securityToken = \"(?<token>.*)\";")
-private val DATA_REGEX = Pattern.compile("window\\.appData = '(?<data>\\{.*})';")
-private val I18N_REGEX = Pattern.compile("window.i18n = \\{(?<translations>.*)};", Pattern.DOTALL)
+private val SECURITY_REGEX = Regex("window\\.securityToken = \"(?<token>.*)\";")
+private val DATA_REGEX = Regex("window\\.appData = '(?<data>\\{.*})';")
+private val I18N_REGEX = Regex("window.i18n = \\{(?<translations>.*)};", RegexOption.DOT_MATCHES_ALL)
 
-class RewardClaimGui(private val id : String) : WindowScreen() {
+class RewardClaimGui(private val id: String) : WindowScreen() {
 
     private var state: State = State.LOADING
     private var selected = -1
@@ -48,32 +46,29 @@ class RewardClaimGui(private val id : String) : WindowScreen() {
                     doOutput = true
                     inputStream.use {
                         val html = IOUtils.toString(it, Charset.defaultCharset())
-                        val securityMatcher: Matcher = SECURITY_REGEX.matcher(html)
-                        val dataMatcher: Matcher = DATA_REGEX.matcher(html)
-                        val i18nMatcher: Matcher = I18N_REGEX.matcher(html)
-                        val securityFound = securityMatcher.find()
-                        val dataFound = dataMatcher.find()
-                        val i18nFound = i18nMatcher.find()
+                        val securityMatcher = SECURITY_REGEX.find(html)
+                        val dataMatcher = DATA_REGEX.find(html)
+                        val i18nMatcher = I18N_REGEX.find(html)
 
-                        if (securityFound && dataFound && i18nFound) {
+                        if (securityMatcher != null && dataMatcher != null && i18nMatcher != null) {
                             data = WebData(securityMatcher, dataMatcher, i18nMatcher)
 
                             if (data.rewards.isEmpty()) {
                                 state = State.FAILED_REWARDS
                                 errorPopup("Rewards were empty.")
-                            }else {
+                            } else {
                                 state = State.SUCCESSFUL
                                 updateElements()
                             }
 
-                            if (data.skippable || data.duration == 0){
+                            if (data.skippable || data.duration == 0) {
                                 adPopup(true)
-                            }else {
+                            } else {
                                 schedule({ adPopup(true) }, data.duration.toLong(), TimeUnit.SECONDS)
                             }
                         } else {
                             state = State.FAILED_REWARDS
-                            errorPopup("Regex could not be found.\nSecurity: $securityFound\nI18n: $i18nFound\nData: $dataFound")
+                            errorPopup("Regex could not be found.\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
                         }
                     }
                 }
@@ -171,7 +166,7 @@ class RewardClaimGui(private val id : String) : WindowScreen() {
         } childOf background
     }
 
-    private val streaks = Array(9){ i ->
+    private val streaks = Array(9) { i ->
         UICircle(5f, VigilancePalette.getDivider(), 15).let {
             it.constrain {
                 x = ((15.percent() + (15.percent() - 0.5.pixel())) - 45.pixel()) + (it.getWidth() * i).pixel()
@@ -182,21 +177,22 @@ class RewardClaimGui(private val id : String) : WindowScreen() {
 
     //endregion
 
-    private val rewards = Array(3){ i -> UIReward(57.5.percent(), 30.percent() + (18 * i).percent()) childOf background}.also {
-        for (reward in it) {
-            reward.onMouseClick { event ->
-                if (event.mouseButton == 0 && state == State.SUCCESSFUL) {
-                    for (j in 0..2) {
-                        it[j].setSelected(it[j] == reward)
-                        if (it[j] != event.currentTarget) continue
-                        selected = j
-                        selectedReward.updateInfo(data.rewards[selected], data.language)
+    private val rewards =
+        Array(3) { i -> UIReward(57.5.percent(), 30.percent() + (18 * i).percent()) childOf background }.also {
+            for (reward in it) {
+                reward.onMouseClick { event ->
+                    if (event.mouseButton == 0 && state == State.SUCCESSFUL) {
+                        for (j in 0..2) {
+                            it[j].setSelected(it[j] == reward)
+                            if (it[j] != event.currentTarget) continue
+                            selected = j
+                            selectedReward.updateInfo(data.rewards[selected], data.language)
+                        }
                     }
                 }
+                reward.hide(true)
             }
-            reward.hide(true)
         }
-    }
 
     private fun updateElements() {
         data.let {
@@ -213,56 +209,62 @@ class RewardClaimGui(private val id : String) : WindowScreen() {
         }
     }
 
-    private var popup : UIPopup? = null
+    private var popup: UIPopup? = null
 
-    private fun errorPopup(error : String) {
+    private fun errorPopup(error: String) {
         Window.enqueueRenderOperation {
             popup?.let {
-                if (it.parent.hasParent){
+                if (it.parent.hasParent) {
                     it.parent.removeChild(it)
                     popup = null
                 }
             }
             popup = UIPopup(
-                    "${ChatColor.RED}An Error Occurred!", error,
-                    UIImage.ofResourceCached("/vigilance/cancel.png"),
-                    { restorePreviousScreen() },
-                    "${ChatColor.BOLD}Close",
-                    UIImage.ofResourceCached("/rewardclaim/external_link.png"),
-                    { UDesktop.browse(URI("https://rewards.hypixel.net/claim-reward/${id}")) },
-                    "${ChatColor.BOLD}Reward"
+                "${ChatColor.RED}An Error Occurred!", error,
+                UIImage.ofResourceCached("/vigilance/cancel.png"),
+                { restorePreviousScreen() },
+                "${ChatColor.BOLD}Close",
+                UIImage.ofResourceCached("/rewardclaim/external_link.png"),
+                { UDesktop.browse(URI("https://rewards.hypixel.net/claim-reward/${id}")) },
+                "${ChatColor.BOLD}Reward"
             ) childOf this.window
         }
     }
 
     private fun confirmPopup() {
-        popup = UIPopup("Confirmation", "Are you sure you want to claim this reward. Click 'Back' if you would like to change which reward you would like to claim or 'Continue' if you like to go ahead with your reward.",
-                null, { removePopup() }, "${ChatColor.BOLD}Back",
-                null, {
-                    runAsync {
-                        try {
-                            (URL("https://rewards.hypixel.net/claim-reward/claim?option=$selected&id=$id&activeAd=${data.activeAd}&_csrf=${data.securityToken}&watchedFallback=false").openConnection() as HttpURLConnection).apply {
-                                requestMethod = "POST"
-                                useCaches = true
-                                addRequestProperty("User-Agent", RewardConfiguration.userAgent)
-                                readTimeout = 15000
-                                connectTimeout = 15000
-                                responseCode
-                                CookieManager.setDefault(null)
-                                restorePreviousScreen()
-                            }
-                        }catch (ignored : Exception){
-                            //IGNORED
+        popup = UIPopup(
+            "Confirmation",
+            "Are you sure you want to claim this reward. Click 'Back' if you would like to change which reward you would like to claim or 'Continue' if you like to go ahead with your reward.",
+            null,
+            { removePopup() },
+            "${ChatColor.BOLD}Back",
+            null,
+            {
+                runAsync {
+                    try {
+                        (URL("https://rewards.hypixel.net/claim-reward/claim?option=$selected&id=$id&activeAd=${data.activeAd}&_csrf=${data.securityToken}&watchedFallback=false").openConnection() as HttpURLConnection).apply {
+                            requestMethod = "POST"
+                            useCaches = true
+                            addRequestProperty("User-Agent", RewardConfiguration.userAgent)
+                            readTimeout = 15000
+                            connectTimeout = 15000
+                            responseCode
+                            CookieManager.setDefault(null)
+                            restorePreviousScreen()
                         }
+                    } catch (ignored: Exception) {
+                        //IGNORED
                     }
-                }, "${ChatColor.BOLD}Continue"
+                }
+            },
+            "${ChatColor.BOLD}Continue"
         ) childOf this.window
     }
 
     private fun removePopup() {
         Window.enqueueRenderOperation {
             popup?.let {
-                if (it.parent.hasParent){
+                if (it.parent.hasParent) {
                     it.parent.removeChild(it)
                     popup = null
                 }
@@ -273,7 +275,7 @@ class RewardClaimGui(private val id : String) : WindowScreen() {
     private fun adPopup(skip: Boolean) {
         Window.enqueueRenderOperation {
             popup?.let {
-                if (it.parent.hasParent){
+                if (it.parent.hasParent) {
                     it.parent.removeChild(it)
                     popup = null
                 }
@@ -282,14 +284,20 @@ class RewardClaimGui(private val id : String) : WindowScreen() {
                 UIPopup(
                     "Reward Claim AD",
                     "Hypixel is a great server and as such we don't want to remove their ad for their store. You can click the skip button when it appears to remove this message and claim your reward.",
-                    UIImage.ofResourceCached("/rewardclaim/external_link.png"), { UDesktop.browse(URI(data.adLink)) }, "${ChatColor.BOLD}Store",
-                    null, { removePopup() }, "${ChatColor.BOLD}Skip"
+                    UIImage.ofResourceCached("/rewardclaim/external_link.png"),
+                    { UDesktop.browse(URI(data.adLink)) },
+                    "${ChatColor.BOLD}Store",
+                    null,
+                    { removePopup() },
+                    "${ChatColor.BOLD}Skip"
                 ) childOf this.window
             } else {
                 UIPopup(
                     "Reward Claim AD",
                     "Hypixel is a great server and as such we don't want to remove their ad for their store. You can click the skip button when it appears to remove this message and claim your reward.",
-                    UIImage.ofResourceCached("/rewardclaim/external_link.png"), { UDesktop.browse(URI(data.adLink)) }, "${ChatColor.BOLD}Store"
+                    UIImage.ofResourceCached("/rewardclaim/external_link.png"),
+                    { UDesktop.browse(URI(data.adLink)) },
+                    "${ChatColor.BOLD}Store"
                 ) childOf this.window
             }
         }

@@ -1,13 +1,14 @@
 package tech.thatgravyboat.rewardclaim.types
 
+import com.google.gson.annotations.SerializedName
 import java.net.MalformedURLException
 import java.net.URL
 
-class RewardImage(private val urlString: String, val height: Int) {
+data class RewardImage(@SerializedName("url") private val urlIn: String, val imageType: String) {
     val url: URL?
         get() {
             return try {
-                URL(urlString)
+                URL(urlIn)
             } catch (ignored: MalformedURLException) {
                 null
             }

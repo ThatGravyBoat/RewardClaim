@@ -4,6 +4,7 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.components.UIWrappedText
+import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.XConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
@@ -11,12 +12,13 @@ import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.ChatColor
 import gg.essential.vigilance.gui.VigilancePalette
 import tech.thatgravyboat.rewardclaim.MappedImageCache
+import tech.thatgravyboat.rewardclaim.RewardConfiguration
 import tech.thatgravyboat.rewardclaim.RewardLanguage
 import tech.thatgravyboat.rewardclaim.types.RewardData
 
-class UISelectedReward(middle : XConstraint) : UIBlock(VigilancePalette.getHighlight().withAlpha(204)) {
+class UISelectedReward(middle: XConstraint) : UIBlock(VigilancePalette.getHighlight().withAlpha(204)) {
 
-    private var image : UIImage? = null
+    private var image: UIImage? = null
 
     private val displayName = UIText("Select a Reward!").constrain {
         x = 31.percent()
@@ -68,16 +70,21 @@ class UISelectedReward(middle : XConstraint) : UIBlock(VigilancePalette.getHighl
         rarity.setText("Rarity: ${data.rarity.color}${language.translate(data.rarity.translationKey)}")
 
         if (data.amount != null) amount.setText("Amount: ${ChatColor.GOLD}${data.amount}")
-        else if (data.boxes != null) amount.setText("Boxes: ${ChatColor.GOLD}${data.boxes}")
+        else if (data.intlist != null) amount.setText("Boxes: ${ChatColor.GOLD}${data.intlist.size}")
         else amount.setText("")
         desc.setText(data.getDescription(language))
 
         data.image?.let {
             it.url?.let { url ->
+                val imageType = RewardConfiguration.getImageType(it.imageType)
                 image?.let(imageBackground::removeChild)
                 image = UIImage.ofURL(url, MappedImageCache).constrain {
-                    height = it.height.percent()
-                    width = 100.percent()
+                    width = imageType.width.percent()
+                    height = imageType.height.percent()
+                    if (imageType.center) {
+                        x = CenterConstraint()
+                        y = CenterConstraint()
+                    }
                 } childOf imageBackground
             }
         }

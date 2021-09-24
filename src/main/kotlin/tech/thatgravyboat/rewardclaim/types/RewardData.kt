@@ -1,42 +1,54 @@
 package tech.thatgravyboat.rewardclaim.types
 
+import com.google.gson.annotations.SerializedName
 import tech.thatgravyboat.rewardclaim.RewardConfiguration
 import tech.thatgravyboat.rewardclaim.RewardLanguage
 import java.util.*
-import java.util.regex.Pattern
 
 
-private val ARMOR_PIECE_REGEX = Pattern.compile("^[a-z0-9_]+_([a-z]+)$", Pattern.CASE_INSENSITIVE)
-private val ARMOR_REGEX = Pattern.compile("_([a-z]+)$", Pattern.CASE_INSENSITIVE)
+private val ARMOR_PIECE_REGEX = Regex("^[a-z0-9_]+_([a-z]+)$", RegexOption.IGNORE_CASE)
+private val ARMOR_REGEX = Regex("_([a-z]+)$", RegexOption.IGNORE_CASE)
 
-class RewardData(val rarity: RewardRarity,
-                 private val reward : String,
-                 val amount : Int?,
-                 val boxes : Int?,
-                 private val gameMode : GameMode?,
-                 private val rewardPackage : String?,
-                 private val rewardKey : String?
-                 ) {
+data class RewardData(
+    val rarity: RewardRarity,
+    private val reward: String,
+    val amount: Int?,
+    val intlist: Array<Int>?,
+    private val gameType: GameMode?,
+    @SerializedName("package") private val rewardPackage: String?,
+    @SerializedName("key") private val rewardKey: String?
+) {
 
     fun getDisplayName(language: RewardLanguage): String {
         rewardPackage?.let { item ->
             if (reward.equals("housing_package", ignoreCase = true)) {
-                return "${rarity.color}${language.translate("housing.skull." + item.replace("specialoccasion_reward_card_skull_", ""))}"
+                return "${rarity.color}${
+                    language.translate(
+                        "housing.skull." + item.replace(
+                            "specialoccasion_reward_card_skull_",
+                            ""
+                        )
+                    )
+                }"
             }
         }
         rewardKey?.let { key ->
             if (reward.equals("add_vanity", ignoreCase = true)) {
-                val pieceMatcher = ARMOR_PIECE_REGEX.matcher(key)
-                val armorMatcher = ARMOR_REGEX.matcher(key)
-                if ("suit" in key && pieceMatcher.find() && armorMatcher.find()) {
-                    return "${rarity.color}${language.translate("vanity." + armorMatcher.group(1))} ${language.translate("vanity.armor." + pieceMatcher.group(1))}"
+                val pieceMatcher = ARMOR_PIECE_REGEX.find(key)
+                val armorMatcher = ARMOR_REGEX.find(key)
+                if ("suit" in key && pieceMatcher != null && armorMatcher != null) {
+                    return "${rarity.color}${language.translate("vanity." + armorMatcher.groups[1]!!.value)} ${
+                        language.translate(
+                            "vanity.armor." + pieceMatcher.groups[1]!!.value
+                        )
+                    }"
                 } else if ("emote" in key || "taunt" in key) {
                     return "${rarity.color}${language.translate("vanity.$key")}"
                 }
             }
         }
         return if (reward.equals("tokens", ignoreCase = true) || reward.equals("coins", ignoreCase = true)) {
-            "${rarity.color}${language.translate("type.$reward").replace("{\$game}", gameMode!!.displayName)}"
+            "${rarity.color}${language.translate("type.$reward").replace("{\$game}", gameType!!.displayName)}"
         } else {
             "${rarity.color}${language.translate("type.$reward")}"
         }
@@ -53,7 +65,9 @@ class RewardData(val rarity: RewardRarity,
             }
         }
         return if (reward.equals("tokens", ignoreCase = true) || reward.equals("coins", ignoreCase = true)) {
-            "${rarity.color}${language.translate("type.$reward.description").replace("{\$game}", gameMode!!.displayName)}"
+            "${rarity.color}${
+                language.translate("type.$reward.description").replace("{\$game}", gameType!!.displayName)
+            }"
         } else {
             "${rarity.color}${language.translate("type.$reward.description")}"
         }
@@ -74,9 +88,9 @@ class RewardData(val rarity: RewardRarity,
             rewardPackage?.let { item ->
                 if (id == "housing_package") {
                     val packageId = item.replace("specialoccasion_reward_card_skull_", "")
-                    RewardConfiguration.TEXTURES[id + "_" + packageId]?.let { image -> return image }
+                    RewardConfiguration.textures[id + "_" + packageId]?.let { image -> return image }
                 }
             }
-            return RewardConfiguration.TEXTURES[id]
+            return RewardConfiguration.textures[id]
         }
 }

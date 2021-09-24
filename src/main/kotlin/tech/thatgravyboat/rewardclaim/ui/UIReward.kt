@@ -3,6 +3,7 @@ package tech.thatgravyboat.rewardclaim.ui
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.XConstraint
 import gg.essential.elementa.constraints.YConstraint
 import gg.essential.elementa.dsl.*
@@ -11,15 +12,17 @@ import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.ChatColor
 import gg.essential.vigilance.gui.VigilancePalette
 import tech.thatgravyboat.rewardclaim.MappedImageCache
+import tech.thatgravyboat.rewardclaim.RewardConfiguration
 import tech.thatgravyboat.rewardclaim.RewardLanguage
 import tech.thatgravyboat.rewardclaim.types.RewardData
 
-class UIReward(xConstraint: XConstraint, yConstraint: YConstraint) : UIBlock(VigilancePalette.getHighlight().withAlpha(204)) {
+class UIReward(xConstraint: XConstraint, yConstraint: YConstraint) :
+    UIBlock(VigilancePalette.getHighlight().withAlpha(204)) {
 
-    private val imageBackground : UIBlock
-    private val title : UIText
-    private val rarityDesc : UIText
-    private val amountDesc : UIText
+    private val imageBackground: UIBlock
+    private val title: UIText
+    private val rarityDesc: UIText
+    private val amountDesc: UIText
 
     init {
         constrain {
@@ -64,20 +67,20 @@ class UIReward(xConstraint: XConstraint, yConstraint: YConstraint) : UIBlock(Vig
 
         amountDesc = UIText("Amount: ${ChatColor.GOLD}0").constrain {
             x = rightSideStart
-            y = 26.percent() + (5+rarityDesc.getHeight()).pixel()
+            y = 26.percent() + (5 + rarityDesc.getHeight()).pixel()
         } childOf this
         amountDesc.hide(true)
     }
 
-    fun setSelected(selected : Boolean) {
+    fun setSelected(selected: Boolean) {
         if (selected) {
             enableEffect(OutlineEffect(VigilancePalette.getAccent(), 1F))
-        }else {
+        } else {
             removeEffect<OutlineEffect>()
         }
     }
 
-    fun setData(data : RewardData, language : RewardLanguage) {
+    fun setData(data: RewardData, language: RewardLanguage) {
         title.setText(data.getDisplayName(language))
         rarityDesc.setText("Rarity: ${data.rarity.color}${language.translate(data.rarity.translationKey)}")
 
@@ -86,16 +89,21 @@ class UIReward(xConstraint: XConstraint, yConstraint: YConstraint) : UIBlock(Vig
             amountDesc.unhide(true)
         }
 
-        data.boxes?.let {
-            amountDesc.setText("Boxes: ${ChatColor.GOLD}$it")
+        data.intlist?.let {
+            amountDesc.setText("Boxes: ${ChatColor.GOLD}${it.size}")
             amountDesc.unhide(true)
         }
 
         data.image?.let {
             it.url?.let { url ->
+                val imageType = RewardConfiguration.getImageType(it.imageType)
                 UIImage.ofURL(url, MappedImageCache).constrain {
-                    width = 100.percent()
-                    height = it.height.percent()
+                    width = imageType.width.percent()
+                    height = imageType.height.percent()
+                    if (imageType.center) {
+                        x = CenterConstraint()
+                        y = CenterConstraint()
+                    }
                 } childOf imageBackground
             }
         }

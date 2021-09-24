@@ -11,7 +11,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import tech.thatgravyboat.rewardclaim.ui.RewardClaimGui
 
-@Mod(name = "RewardClaim", modid = "gravyrewardclaim", version = "1.0.0", modLanguageAdapter = "tech.thatgravyboat.rewardclaim.adapter.KotlinLanguageAdapter")
+@Mod(
+    name = "RewardClaim",
+    modid = "gravyrewardclaim",
+    version = "1.0.0",
+    modLanguageAdapter = "gg.essential.api.utils.KotlinAdapter"
+)
 object ForgeTemplate {
 
     private var rewardClaimTime: Long = 0
@@ -28,26 +33,25 @@ object ForgeTemplate {
 
     @SubscribeEvent
     fun onChatMessage(event: ClientChatReceivedEvent) {
-        val rewardMatcher = RewardConfiguration.rewardMessageRegex.matcher(event.message.unformattedText.trim())
-        val rewardMissedMatcher = RewardConfiguration.rewardMissedMessageRegex.matcher(event.message.unformattedText.trim())
-
-        if (rewardMatcher.matches()) {
-            EssentialAPI.getGuiUtil().openScreen(RewardClaimGui(rewardMatcher.group("id")))
+        RewardConfiguration.rewardMessageRegex.matchEntire(event.message.unformattedText.trim())?.apply {
+            EssentialAPI.getGuiUtil().openScreen(RewardClaimGui(groups["id"]!!.value))
             rewardClaimTime = System.currentTimeMillis()
         }
-        if (rewardMissedMatcher.matches()) {
+
+        RewardConfiguration.rewardMissedMessageRegex.matchEntire(event.message.unformattedText.trim())?.apply {
             EssentialAPI.getNotifications().push(
-                    "Reward Claim Missed!",
-                    "You missed a reward claim, click on this to open the reward claim gui to claim your reward.",
-                    { EssentialAPI.getGuiUtil().openScreen(RewardClaimGui(rewardMissedMatcher.group("id"))) }
-            )
+                "Reward Claim Missed!",
+                "You missed a reward claim, click on this to open the reward claim gui to claim your reward."
+            ) { EssentialAPI.getGuiUtil().openScreen(RewardClaimGui(groups["id"]!!.value)) }
             event.isCanceled = true
         }
     }
 
     @SubscribeEvent
     fun onScreen(event: GuiOpenEvent) {
-        if (EssentialAPI.getGuiUtil().openedScreen() is RewardClaimGui && event.gui is GuiScreenBook && System.currentTimeMillis() - rewardClaimTime <= 3000){
+        if (EssentialAPI.getGuiUtil()
+                .openedScreen() is RewardClaimGui && event.gui is GuiScreenBook && System.currentTimeMillis() - rewardClaimTime <= 3000
+        ) {
             event.isCanceled = true
             rewardClaimTime = 0
         }

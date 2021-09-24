@@ -11,7 +11,13 @@ import java.awt.Color
 
 private val BUTTON_HOVER = Color(0, 212, 105)
 
-class UIButton(private val image : UIImage?, private val widthIn : Float, private var xConstraint : XConstraint, private val text : UIText, alignment: Alignment) : UIBlock(VigilancePalette.getAccent()) {
+class UIButton(
+    private val image: UIImage?,
+    private val widthIn: Float,
+    private var xConstraint: XConstraint,
+    private val text: UIText,
+    alignment: Alignment
+) : UIBlock(VigilancePalette.getAccent()) {
 
     init {
         if (alignment == Alignment.LEFT) {
