@@ -6,8 +6,7 @@ import tech.thatgravyboat.rewardclaim.RewardLanguage
 import java.util.*
 
 
-private val ARMOR_PIECE_REGEX = Regex("^[a-z0-9_]+_([a-z]+)$", RegexOption.IGNORE_CASE)
-private val ARMOR_REGEX = Regex("_([a-z]+)$", RegexOption.IGNORE_CASE)
+private val ARMOR_REGEX = Regex("(^[a-z0-9_]+)_([a-z]+)$", RegexOption.IGNORE_CASE)
 
 data class RewardData(
     val rarity: RewardRarity,
@@ -34,12 +33,11 @@ data class RewardData(
         }
         rewardKey?.let { key ->
             if (reward.equals("add_vanity", ignoreCase = true)) {
-                val pieceMatcher = ARMOR_PIECE_REGEX.find(key)
                 val armorMatcher = ARMOR_REGEX.find(key)
-                if ("suit" in key && pieceMatcher != null && armorMatcher != null) {
+                if ("suit" in key && armorMatcher != null) {
                     return "${rarity.color}${language.translate("vanity." + armorMatcher.groups[1]!!.value)} ${
                         language.translate(
-                            "vanity.armor." + pieceMatcher.groups[1]!!.value
+                            "vanity.armor." + armorMatcher.groups[2]!!.value
                         )
                     }"
                 } else if ("emote" in key || "taunt" in key) {
