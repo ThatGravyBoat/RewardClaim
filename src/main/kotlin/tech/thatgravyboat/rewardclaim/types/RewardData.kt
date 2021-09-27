@@ -1,8 +1,7 @@
 package tech.thatgravyboat.rewardclaim.types
 
 import com.google.gson.annotations.SerializedName
-import tech.thatgravyboat.rewardclaim.RewardConfiguration
-import tech.thatgravyboat.rewardclaim.RewardLanguage
+import tech.thatgravyboat.rewardclaim.ExternalConfiguration
 import java.util.*
 
 
@@ -86,9 +85,9 @@ data class RewardData(
             rewardPackage?.let { item ->
                 if (id == "housing_package") {
                     val packageId = item.replace("specialoccasion_reward_card_skull_", "")
-                    RewardConfiguration.textures[id + "_" + packageId]?.let { image -> return image }
+                    ExternalConfiguration.textures[id + "_" + packageId]?.let { image -> return image }
                 }
             }
-            return RewardConfiguration.textures[id]
+            return ExternalConfiguration.textures[id]
         }
 }

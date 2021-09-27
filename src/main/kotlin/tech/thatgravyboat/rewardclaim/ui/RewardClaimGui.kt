@@ -10,7 +10,8 @@ import gg.essential.universal.ChatColor
 import gg.essential.universal.UDesktop
 import gg.essential.vigilance.gui.VigilancePalette
 import org.apache.commons.io.IOUtils
-import tech.thatgravyboat.rewardclaim.RewardConfiguration
+import tech.thatgravyboat.rewardclaim.Config
+import tech.thatgravyboat.rewardclaim.ExternalConfiguration
 import tech.thatgravyboat.rewardclaim.types.WebData
 import java.awt.Color
 import java.net.*
@@ -40,7 +41,7 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
                 (url.openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
                     useCaches = true
-                    addRequestProperty("User-Agent", RewardConfiguration.userAgent)
+                    addRequestProperty("User-Agent", ExternalConfiguration.userAgent)
                     readTimeout = 15000
                     connectTimeout = 15000
                     doOutput = true
@@ -141,7 +142,10 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
                 button.onMouseEnter { setColor(BUTTON_HOVER) }
                 button.onMouseLeave { setColor(VigilancePalette.getAccent()) }
                 button.onMouseClick { event ->
-                    if (event.mouseButton == 0 && selected != -1) confirmPopup()
+                    if (event.mouseButton == 0 && selected != -1) {
+                        if (Config.showConfirmation) confirmPopup()
+                        else claimReward()
+                    }
                     event.stopPropagation()
                 }
             }
@@ -239,26 +243,28 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
             { removePopup() },
             "${ChatColor.BOLD}Back",
             null,
-            {
-                runAsync {
-                    try {
-                        (URL("https://rewards.hypixel.net/claim-reward/claim?option=$selected&id=$id&activeAd=${data.activeAd}&_csrf=${data.securityToken}&watchedFallback=false").openConnection() as HttpURLConnection).apply {
-                            requestMethod = "POST"
-                            useCaches = true
-                            addRequestProperty("User-Agent", RewardConfiguration.userAgent)
-                            readTimeout = 15000
-                            connectTimeout = 15000
-                            responseCode
-                            CookieManager.setDefault(null)
-                            restorePreviousScreen()
-                        }
-                    } catch (ignored: Exception) {
-                        //IGNORED
-                    }
-                }
-            },
+            { claimReward() },
             "${ChatColor.BOLD}Continue"
         ) childOf this.window
+    }
+
+    private fun claimReward() {
+        runAsync {
+            try {
+                (URL("https://rewards.hypixel.net/claim-reward/claim?option=$selected&id=$id&activeAd=${data.activeAd}&_csrf=${data.securityToken}&watchedFallback=false").openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    useCaches = true
+                    addRequestProperty("User-Agent", ExternalConfiguration.userAgent)
+                    readTimeout = 15000
+                    connectTimeout = 15000
+                    responseCode
+                    CookieManager.setDefault(null)
+                    restorePreviousScreen()
+                }
+            } catch (ignored: Exception) {
+                //IGNORED
+            }
+        }
     }
 
     private fun removePopup() {

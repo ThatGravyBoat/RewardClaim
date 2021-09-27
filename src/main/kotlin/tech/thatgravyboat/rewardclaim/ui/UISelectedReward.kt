@@ -12,9 +12,9 @@ import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.ChatColor
 import gg.essential.vigilance.gui.VigilancePalette
 import tech.thatgravyboat.rewardclaim.MappedImageCache
-import tech.thatgravyboat.rewardclaim.RewardConfiguration
-import tech.thatgravyboat.rewardclaim.RewardLanguage
+import tech.thatgravyboat.rewardclaim.ExternalConfiguration
 import tech.thatgravyboat.rewardclaim.types.RewardData
+import tech.thatgravyboat.rewardclaim.types.RewardLanguage
 
 class UISelectedReward(middle: XConstraint) : UIBlock(VigilancePalette.getHighlight().withAlpha(204)) {
 
@@ -76,7 +76,7 @@ class UISelectedReward(middle: XConstraint) : UIBlock(VigilancePalette.getHighli
 
         data.image?.let {
             it.url?.let { url ->
-                val imageType = RewardConfiguration.getImageType(it.imageType)
+                val imageType = ExternalConfiguration.getImageType(it.imageType)
                 image?.let(imageBackground::removeChild)
                 image = UIImage.ofURL(url, MappedImageCache).constrain {
                     width = imageType.width.percent()

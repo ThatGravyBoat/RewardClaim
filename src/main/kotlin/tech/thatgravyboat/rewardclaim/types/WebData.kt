@@ -1,7 +1,6 @@
 package tech.thatgravyboat.rewardclaim.types
 
 import com.google.gson.Gson
-import tech.thatgravyboat.rewardclaim.RewardLanguage
 
 private val GSON = Gson()
 
