@@ -1,3 +1,9 @@
 package tech.thatgravyboat.rewardclaim.types
 
-data class StreakData(val progress: Int, val current: Int, val highest: Int)
+import com.google.gson.annotations.SerializedName
+
+data class StreakData(
+    @SerializedName("value") val progress: Int,
+    @SerializedName("score") val current: Int,
+    @SerializedName("highScore") val highest: Int
+)
