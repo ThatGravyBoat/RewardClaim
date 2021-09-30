@@ -261,8 +261,9 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
                     CookieManager.setDefault(null)
                     restorePreviousScreen()
                 }
-            } catch (ignored: Exception) {
-                //IGNORED
+            } catch (e: Exception) {
+                errorPopup("Error: " + e.message)
+                e.printStackTrace()
             }
         }
     }
