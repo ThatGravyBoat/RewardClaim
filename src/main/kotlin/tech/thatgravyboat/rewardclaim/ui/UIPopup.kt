@@ -31,9 +31,14 @@ class UIPopup private constructor(title: String, text: String) : UIBlock(getBack
     }
 
     constructor(
-        title: String, text: String,
-        image1: UIImage? = null, event1: (UIComponent.(event: UIClickEvent) -> Unit), buttonText: String,
-        image2: UIImage? = null, event2: (UIComponent.(event: UIClickEvent) -> Unit), buttonText2: String
+        title: String,
+        text: String,
+        image1: UIImage? = null,
+        event1: (UIComponent.(event: UIClickEvent) -> Unit),
+        buttonText: String,
+        image2: UIImage? = null,
+        event2: (UIComponent.(event: UIClickEvent) -> Unit),
+        buttonText2: String
     ) : this(title, text) {
 
         val btn1Text = UIText(buttonText, false)
@@ -84,5 +89,4 @@ class UIPopup private constructor(title: String, text: String) : UIBlock(getBack
             y = 5.percent() + 11.pixel()
         } childOf box
     }
-
 }

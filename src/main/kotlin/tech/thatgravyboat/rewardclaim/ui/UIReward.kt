@@ -11,8 +11,8 @@ import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.ChatColor
 import gg.essential.vigilance.gui.VigilancePalette
-import tech.thatgravyboat.rewardclaim.MappedImageCache
 import tech.thatgravyboat.rewardclaim.ExternalConfiguration
+import tech.thatgravyboat.rewardclaim.MappedImageCache
 import tech.thatgravyboat.rewardclaim.types.RewardData
 import tech.thatgravyboat.rewardclaim.types.RewardLanguage
 

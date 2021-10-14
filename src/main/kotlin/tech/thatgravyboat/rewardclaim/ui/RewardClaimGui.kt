@@ -29,58 +29,8 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
     private var state: State = State.LOADING
     private var selected = -1
 
-    //Raw Data
+    // Raw Data
     private lateinit var data: WebData
-
-    init {
-        runAsync(Runnable {
-            try {
-                val cookieManager = CookieManager()
-                CookieHandler.setDefault(cookieManager)
-                val url = URL("https://rewards.hypixel.net/claim-reward/$id")
-                (url.openConnection() as HttpURLConnection).apply {
-                    requestMethod = "GET"
-                    useCaches = true
-                    addRequestProperty("User-Agent", ExternalConfiguration.userAgent)
-                    readTimeout = 15000
-                    connectTimeout = 15000
-                    doOutput = true
-                    inputStream.use {
-                        val html = IOUtils.toString(it, Charset.defaultCharset())
-                        val securityMatcher = SECURITY_REGEX.find(html)
-                        val dataMatcher = DATA_REGEX.find(html)
-                        val i18nMatcher = I18N_REGEX.find(html)
-
-                        if (securityMatcher != null && dataMatcher != null && i18nMatcher != null) {
-                            data = WebData(securityMatcher, dataMatcher, i18nMatcher)
-
-                            if (data.rewards.isEmpty()) {
-                                state = State.FAILED_REWARDS
-                                errorPopup("Rewards were empty.")
-                            } else {
-                                state = State.SUCCESSFUL
-                                updateElements()
-                            }
-
-                            if (data.skippable || data.duration == 0) {
-                                adPopup(true)
-                            } else {
-                                schedule({ adPopup(true) }, data.duration.toLong(), TimeUnit.SECONDS)
-                            }
-                        } else {
-                            state = State.FAILED_REWARDS
-                            errorPopup("Regex could not be found.\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                state = State.FAILED
-                errorPopup("Error: " + e.message)
-                e.printStackTrace()
-            }
-        })
-        adPopup(false)
-    }
 
     private val background = UIBlock(VigilancePalette.getBackground()).constrain {
         width = 100.percent()
@@ -192,11 +142,67 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
                             selected = j
                             selectedReward.updateInfo(data.rewards[selected], data.language)
                         }
+                        if (event.clickCount >= 2) {
+                            if (Config.showDoubleClickConfirmation) confirmPopup()
+                            else claimReward()
+                        }
                     }
                 }
                 reward.hide(true)
             }
         }
+
+    init {
+        runAsync(
+            Runnable {
+                try {
+                    val cookieManager = CookieManager()
+                    CookieHandler.setDefault(cookieManager)
+                    val url = URL("https://rewards.hypixel.net/claim-reward/$id")
+                    (url.openConnection() as HttpURLConnection).apply {
+                        requestMethod = "GET"
+                        useCaches = true
+                        addRequestProperty("User-Agent", ExternalConfiguration.userAgent)
+                        readTimeout = 15000
+                        connectTimeout = 15000
+                        doOutput = true
+                        inputStream.use {
+                            val html = IOUtils.toString(it, Charset.defaultCharset())
+                            val securityMatcher = SECURITY_REGEX.find(html)
+                            val dataMatcher = DATA_REGEX.find(html)
+                            val i18nMatcher = I18N_REGEX.find(html)
+
+                            if (securityMatcher != null && dataMatcher != null && i18nMatcher != null) {
+                                data = WebData(securityMatcher, dataMatcher, i18nMatcher)
+
+                                if (data.rewards.isEmpty()) {
+                                    state = State.FAILED_REWARDS
+                                    errorPopup("Rewards were empty.")
+                                } else {
+                                    state = State.SUCCESSFUL
+                                    updateElements()
+                                }
+
+                                if (data.skippable || data.duration == 0) {
+                                    adPopup(true)
+                                } else {
+                                    schedule({ adPopup(true) }, data.duration.toLong(), TimeUnit.SECONDS)
+                                }
+                            } else {
+                                state = State.FAILED_REWARDS
+                                errorPopup("Regex could not be found.\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    state = State.FAILED
+                    errorPopup("Error: " + e.message)
+                    e.printStackTrace()
+                }
+            }
+        )
+        adPopup(false)
+    }
 
     private fun updateElements() {
         data.let {
@@ -229,7 +235,7 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
                 { restorePreviousScreen() },
                 "${ChatColor.BOLD}Close",
                 UIImage.ofResourceCached("/rewardclaim/external_link.png"),
-                { UDesktop.browse(URI("https://rewards.hypixel.net/claim-reward/${id}")) },
+                { UDesktop.browse(URI("https://rewards.hypixel.net/claim-reward/$id")) },
                 "${ChatColor.BOLD}Reward"
             ) childOf this.window
         }
@@ -310,7 +316,7 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
         }
     }
 
-    private fun getAd() : URI {
+    private fun getAd(): URI {
         return if (this::data.isInitialized) URI(data.adLink) else URI("https://store.hypixel.net/?utm_source=rewards-video&utm_medium=website&utm_content=TRsCiBNYY7M&utm_campaign=Rewardss")
     }
 

@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import tech.thatgravyboat.rewardclaim.ExternalConfiguration
 import java.util.*
 
-
 private val ARMOR_REGEX = Regex("(^[a-z0-9_]+)_([a-z]+)$", RegexOption.IGNORE_CASE)
 
 data class RewardData(
@@ -21,12 +20,12 @@ data class RewardData(
         rewardPackage?.let { item ->
             if (reward.equals("housing_package", ignoreCase = true)) {
                 return "${rarity.color}${
-                    language.translate(
-                        "housing.skull." + item.replace(
-                            "specialoccasion_reward_card_skull_",
-                            ""
-                        )
+                language.translate(
+                    "housing.skull." + item.replace(
+                        "specialoccasion_reward_card_skull_",
+                        ""
                     )
+                )
                 }"
             }
         }
@@ -35,9 +34,9 @@ data class RewardData(
                 val armorMatcher = ARMOR_REGEX.find(key)
                 if ("suit" in key && armorMatcher != null) {
                     return "${rarity.color}${language.translate("vanity." + armorMatcher.groups[1]!!.value)} ${
-                        language.translate(
-                            "vanity.armor." + armorMatcher.groups[2]!!.value
-                        )
+                    language.translate(
+                        "vanity.armor." + armorMatcher.groups[2]!!.value
+                    )
                     }"
                 } else if ("emote" in key || "taunt" in key) {
                     return "${rarity.color}${language.translate("vanity.$key")}"
@@ -63,7 +62,7 @@ data class RewardData(
         }
         return if (reward.equals("tokens", ignoreCase = true) || reward.equals("coins", ignoreCase = true)) {
             "${rarity.color}${
-                language.translate("type.$reward.description").replace("{\$game}", gameType!!.displayName)
+            language.translate("type.$reward.description").replace("{\$game}", gameType!!.displayName)
             }"
         } else {
             "${rarity.color}${language.translate("type.$reward.description")}"

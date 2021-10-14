@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import gg.essential.api.utils.WebUtil
 import tech.thatgravyboat.rewardclaim.types.ImageType
 import tech.thatgravyboat.rewardclaim.types.RewardImage
+import java.lang.Exception
 
 private val GSON = Gson()
 private val DEFAULT_IMAGE_TYPE = ImageType(142, 100, false)
@@ -17,11 +18,11 @@ object ExternalConfiguration {
     var disabled = false
     lateinit var disabledMessage: String
 
-    fun getImageType(type: String?) = if (type == null) DEFAULT_IMAGE_TYPE else imageTypes.getOrDefault(type, DEFAULT_IMAGE_TYPE)
+    fun getImageType(type: String?) = imageTypes.getOrDefault(type, DEFAULT_IMAGE_TYPE)
 
     fun loadData() {
         WebUtil.fetchString("https://raw.githubusercontent.com/ThatGravyBoat/RewardClaim/master/data.json")?.let {
-            val config = GSON.fromJson(it, JsonConfig::class.java)
+            val config = try { GSON.fromJson(it, JsonConfig::class.java) } catch (e: Exception) { JsonConfig() }
             textures = config.textures
             imageTypes = config.imageTypes
             rewardMessageRegex = Regex(config.rewardRegex)

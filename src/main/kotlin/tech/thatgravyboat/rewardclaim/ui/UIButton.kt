@@ -49,7 +49,6 @@ class UIButton(
         this.onMouseEnter { this.setColor(BUTTON_HOVER) }
         this.onMouseLeave { this.setColor(VigilancePalette.getAccent()) }
     }
-
 }
 
 enum class Alignment {

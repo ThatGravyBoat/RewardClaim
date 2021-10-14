@@ -10,8 +10,11 @@ import java.net.URI
 @Suppress("unused")
 object Config : Vigilant(File("./config/rewardclaim.toml")) {
 
-    @Property(type = PropertyType.SWITCH, "Show Confirmation", "General", description = "Shows a confirmation before you claim an item to make sure you don't by accidently claim an reward you didn't want.")
+    @Property(type = PropertyType.SWITCH, "Show Confirmation", "General", description = "Shows a confirmation before you claim an item to make sure you don't accidentally claim a reward you didn't want.")
     var showConfirmation = true
+
+    @Property(type = PropertyType.SWITCH, "Show Double Click Confirmation", "General", description = "Shows a confirmation before you double click claim an item to make sure you don't accidentally claim a reward you didn't want.")
+    var showDoubleClickConfirmation = true
 
     @Property(type = PropertyType.BUTTON, "Discord", "General", "Self Promotion", placeholder = "Visit")
     fun discord() {
