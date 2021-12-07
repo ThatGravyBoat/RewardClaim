@@ -20,11 +20,12 @@ import tech.thatgravyboat.rewardclaim.ui.RewardClaimGui
 object RewardClaim {
 
     private var rewardClaimTime: Long = 0
+    var debugMode = false
 
     @Mod.EventHandler
     fun onFMLInitialization(event: FMLInitializationEvent?) {
         MinecraftForge.EVENT_BUS.register(this)
-        EssentialAPI.getCommandRegistry().registerCommand(Command())
+        Command().register()
     }
 
     @Mod.EventHandler
@@ -64,6 +65,13 @@ object RewardClaim {
 
     @SubscribeEvent
     fun onScreen(event: GuiOpenEvent) {
+        if (debugMode) {
+            println("-------------------------------------------------------------------------------")
+            println("[Reward Claim Debug] : Current Screen = ${EssentialAPI.getGuiUtil().openedScreen()?.javaClass?.name ?: "null"}")
+            println("[Reward Claim Debug] : Screen = ${event.gui?.javaClass?.name ?: "null"}")
+            println("[Reward Claim Debug] : Reward Time = $rewardClaimTime")
+            println("-------------------------------------------------------------------------------")
+        }
         if (EssentialAPI.getGuiUtil().openedScreen() is RewardClaimGui &&
             event.gui is GuiScreenBook &&
             System.currentTimeMillis() - rewardClaimTime <= 3000
