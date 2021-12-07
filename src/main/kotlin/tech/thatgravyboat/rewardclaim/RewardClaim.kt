@@ -14,7 +14,7 @@ import tech.thatgravyboat.rewardclaim.ui.RewardClaimGui
 @Mod(
     name = "RewardClaim",
     modid = "gravyrewardclaim",
-    version = "1.0.0",
+    version = "1.0.4",
     modLanguageAdapter = "gg.essential.api.utils.KotlinAdapter"
 )
 object RewardClaim {
