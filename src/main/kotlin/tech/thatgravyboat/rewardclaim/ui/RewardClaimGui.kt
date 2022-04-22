@@ -190,7 +190,7 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
                                 }
                             } else {
                                 state = State.FAILED_REWARDS
-                                errorPopup("Regex could not be found.\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
+                                errorPopup("Regex could not be found.\nUrl:${this.url}\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
                             }
                         }
                     }

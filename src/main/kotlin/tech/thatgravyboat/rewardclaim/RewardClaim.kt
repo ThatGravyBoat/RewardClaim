@@ -73,11 +73,9 @@ object RewardClaim {
             println("-------------------------------------------------------------------------------")
         }
         if (EssentialAPI.getGuiUtil().openedScreen() is RewardClaimGui &&
-            event.gui is GuiScreenBook &&
-            System.currentTimeMillis() - rewardClaimTime <= 3000
+            (event.gui is GuiScreenBook || event.gui == null) && System.currentTimeMillis() - rewardClaimTime <= Config.checkingTimer
         ) {
             event.isCanceled = true
-            rewardClaimTime = 0
         }
     }
 }
