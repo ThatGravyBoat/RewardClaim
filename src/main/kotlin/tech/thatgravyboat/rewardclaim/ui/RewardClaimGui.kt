@@ -133,16 +133,16 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
 
     private val rewards =
         Array(3) { i -> UIReward(57.5.percent(), 30.percent() + (18 * i).percent()) childOf background }.also {
-            for (reward in it) {
+            for ((i,reward) in it.withIndex()) {
                 reward.onMouseClick { event ->
                     if (event.mouseButton == 0 && state == State.SUCCESSFUL) {
-                        for (j in 0..2) {
-                            it[j].setSelected(it[j] == reward)
-                            if (it[j] != event.currentTarget) continue
-                            selected = j
-                            selectedReward.updateInfo(data.rewards[selected], data.language)
+                        val wasSelected = i == selected
+                        selected = i
+                        it.forEach { rew ->
+                            rew.setSelected(rew == reward)
                         }
-                        if (event.clickCount >= 2) {
+                        selectedReward.updateInfo(data.rewards[selected], data.language)
+                        if (event.clickCount >= 2 && wasSelected) {
                             if (Config.showDoubleClickConfirmation) confirmPopup()
                             else claimReward()
                         }
