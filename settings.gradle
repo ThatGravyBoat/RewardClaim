@@ -19,7 +19,7 @@ pluginManagement {
         eachPlugin {
             // If the "net.minecraftforge.gradle.forge" plugin is requested we redirect it to asbyth's ForgeGradle fork
             if (requested.id.id == "net.minecraftforge.gradle.forge") {
-                useModule("com.github.asbyth:ForgeGradle:${requested.version}")
+                useModule("com.github.Debuggingss:ForgeGradle:${requested.version}")
             }
         }
     }

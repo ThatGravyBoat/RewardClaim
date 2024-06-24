@@ -1,11 +1,11 @@
 plugins {
     id "java"
     id "com.github.johnrengelman.shadow" version "6.1.0"
-    id "net.minecraftforge.gradle.forge" version "ddb1eb0"
+    id "net.minecraftforge.gradle.forge" version "1d22621a6b"
     id "org.jetbrains.kotlin.jvm" version "1.5.31"
 }
 
-version = "1.0.5"
+version = "1.0.6"
 group = "tech.thatgravyboat"
 archivesBaseName = "RewardClaim"
 
@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
     //include 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21'
-    provided "gg.essential:loader-launchwrapper:1.1.2"
+    provided "gg.essential:loader-launchwrapper:1.2.2"
     implementation "gg.essential:essential-1.8.9-forge:1582"
 }
 
@@ -68,6 +68,12 @@ shadowJar {
     archiveClassifier.set('')
     configurations = [project.configurations.provided]
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
+
+    manifest.attributes(
+            "ForceLoadAsMod": true,
+            "ModSide": "CLIENT",
+            "TweakClass": "gg.essential.loader.stage0.EssentialSetupTweaker"
+    )
 }
 
 compileKotlin {
