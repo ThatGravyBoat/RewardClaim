@@ -1,7 +1,6 @@
 package tech.thatgravyboat.rewardclaim.types
 
 import gg.essential.universal.ChatColor
-import java.awt.Color
 
 @Suppress("unused")
 enum class RewardRarity(val translationKey: String, val color: ChatColor) {

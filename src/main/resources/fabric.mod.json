@@ -1,0 +1,35 @@
+{
+    "schemaVersion": 1,
+    "id": "${id}",
+    "name": "${name}",
+    "version": "${version}",
+    "description": "Allows you to claim Hypixel rewards in-game.",
+    "authors": [
+        "ThatGravyBoat"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/mod/rewardclaim",
+        "sources": "https://github.com/ThatGravyBoat/rewardclaim",
+        "issues": "https://github.com/ThatGravyBoat/rewardclaim/issues"
+    },
+    "entrypoints": {
+        "client": [
+            {
+                "adapter": "kotlin",
+                "value": "tech.thatgravyboat.rewardclaim.Initializer::init"
+            }
+        ]
+    },
+    "mixins": [
+        "mixins.rewardclaim.json"
+    ],
+    "license": "All Rights Reserved",
+    "environment": "client",
+    "depends": {
+        "fabric-language-kotlin": ">=1.6.4+kotlin.1.5.30",
+        "fabricloader": ">=0.12.0",
+        "fabric-api-base": "*",
+        "minecraft": "${mcVersionStr}",
+        "java": ">=${java}"
+    }
+}

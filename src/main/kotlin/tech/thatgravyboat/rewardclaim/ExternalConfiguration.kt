@@ -1,7 +1,7 @@
 package tech.thatgravyboat.rewardclaim
 
 import com.google.gson.Gson
-import gg.essential.api.utils.WebUtil
+import tech.thatgravyboat.rewardclaim.platform.PlatformUtils
 import tech.thatgravyboat.rewardclaim.types.ImageType
 import tech.thatgravyboat.rewardclaim.types.RewardImage
 import java.lang.Exception
@@ -21,7 +21,7 @@ object ExternalConfiguration {
     fun getImageType(type: String?) = imageTypes.getOrDefault(type, DEFAULT_IMAGE_TYPE)
 
     fun loadData() {
-        WebUtil.fetchString("https://raw.githubusercontent.com/ThatGravyBoat/RewardClaim/master/data.json")?.let {
+        PlatformUtils.fetch("https://raw.githubusercontent.com/ThatGravyBoat/RewardClaim/master/data.json")?.let {
             val config = try { GSON.fromJson(it, JsonConfig::class.java) } catch (e: Exception) { JsonConfig() }
             textures = config.textures
             imageTypes = config.imageTypes

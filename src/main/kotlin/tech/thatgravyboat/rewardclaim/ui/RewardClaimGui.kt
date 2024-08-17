@@ -1,7 +1,5 @@
 package tech.thatgravyboat.rewardclaim.ui
 
-import gg.essential.api.utils.Multithreading.runAsync
-import gg.essential.api.utils.Multithreading.schedule
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
 import gg.essential.elementa.constraints.CenterConstraint
@@ -12,6 +10,8 @@ import gg.essential.vigilance.gui.VigilancePalette
 import org.apache.commons.io.IOUtils
 import tech.thatgravyboat.rewardclaim.Config
 import tech.thatgravyboat.rewardclaim.ExternalConfiguration
+import tech.thatgravyboat.rewardclaim.platform.Multithreading.runAsync
+import tech.thatgravyboat.rewardclaim.platform.Multithreading.schedule
 import tech.thatgravyboat.rewardclaim.types.WebData
 import java.awt.Color
 import java.net.*
@@ -153,54 +153,52 @@ class RewardClaimGui(private val id: String) : WindowScreen() {
         }
 
     init {
-        runAsync(
-            Runnable {
-                try {
-                    val cookieManager = CookieManager()
-                    CookieHandler.setDefault(cookieManager)
-                    val url = URL("https://rewards.hypixel.net/claim-reward/$id")
-                    (url.openConnection() as HttpURLConnection).apply {
-                        requestMethod = "GET"
-                        useCaches = true
-                        addRequestProperty("User-Agent", ExternalConfiguration.userAgent)
-                        readTimeout = 15000
-                        connectTimeout = 15000
-                        doOutput = true
-                        inputStream.use {
-                            val html = IOUtils.toString(it, Charset.defaultCharset())
-                            val securityMatcher = SECURITY_REGEX.find(html)
-                            val dataMatcher = DATA_REGEX.find(html)
-                            val i18nMatcher = I18N_REGEX.find(html)
+        runAsync {
+            try {
+                val cookieManager = CookieManager()
+                CookieHandler.setDefault(cookieManager)
+                val url = URL("https://rewards.hypixel.net/claim-reward/$id")
+                (url.openConnection() as HttpURLConnection).apply {
+                    requestMethod = "GET"
+                    useCaches = true
+                    addRequestProperty("User-Agent", ExternalConfiguration.userAgent)
+                    readTimeout = 15000
+                    connectTimeout = 15000
+                    doOutput = true
+                    inputStream.use {
+                        val html = IOUtils.toString(it, Charset.defaultCharset())
+                        val securityMatcher = SECURITY_REGEX.find(html)
+                        val dataMatcher = DATA_REGEX.find(html)
+                        val i18nMatcher = I18N_REGEX.find(html)
 
-                            if (securityMatcher != null && dataMatcher != null && i18nMatcher != null) {
-                                data = WebData(securityMatcher, dataMatcher, i18nMatcher)
+                        if (securityMatcher != null && dataMatcher != null && i18nMatcher != null) {
+                            data = WebData(securityMatcher, dataMatcher, i18nMatcher)
 
-                                if (data.rewards.isEmpty()) {
-                                    state = State.FAILED_REWARDS
-                                    errorPopup("Rewards were empty.")
-                                } else {
-                                    state = State.SUCCESSFUL
-                                    updateElements()
-                                }
-
-                                if (data.skippable || data.duration == 0) {
-                                    adPopup(true)
-                                } else {
-                                    schedule({ adPopup(true) }, data.duration.toLong(), TimeUnit.SECONDS)
-                                }
-                            } else {
+                            if (data.rewards.isEmpty()) {
                                 state = State.FAILED_REWARDS
-                                errorPopup("Regex could not be found.\nUrl:${this.url}\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
+                                errorPopup("Rewards were empty.")
+                            } else {
+                                state = State.SUCCESSFUL
+                                updateElements()
                             }
+
+                            if (data.skippable || data.duration == 0) {
+                                adPopup(true)
+                            } else {
+                                schedule({ adPopup(true) }, data.duration.toLong(), TimeUnit.SECONDS)
+                            }
+                        } else {
+                            state = State.FAILED_REWARDS
+                            errorPopup("Regex could not be found.\nUrl:${this.url}\nSecurity: ${securityMatcher != null}\nI18n: ${i18nMatcher != null}\nData: $${dataMatcher != null}")
                         }
                     }
-                } catch (e: Exception) {
-                    state = State.FAILED
-                    errorPopup("Error: " + e.message)
-                    e.printStackTrace()
                 }
+            } catch (e: Exception) {
+                state = State.FAILED
+                errorPopup("Error: " + e.message)
+                e.printStackTrace()
             }
-        )
+        }
         adPopup(false)
     }
 
