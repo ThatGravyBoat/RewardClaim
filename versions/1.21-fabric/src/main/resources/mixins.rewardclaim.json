@@ -1,8 +1,8 @@
 {
-    "compatibilityLevel": "JAVA_17",
+    "compatibilityLevel": "JAVA_21",
     "minVersion": "0.7",
     "package": "tech.thatgravyboat.rewardclaim.mixins",
-    "refmap": "mixins.rewardclaim.refmap.json",
+    "refmap": "mixins.gravyrewardclaim.refmap.json",
     "mixins": [
         "MinecraftClientMixin"
     ],
