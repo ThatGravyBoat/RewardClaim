@@ -1,155 +1,88 @@
-import gg.essential.gradle.util.*
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
-
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
-    kotlin("jvm")
-    id("gg.essential.multi-version")
-    id("gg.essential.defaults")
-    id("com.github.johnrengelman.shadow")
-    id("net.kyori.blossom")
+    idea
+    kotlin("jvm") version "2.0.20"
+    alias(libs.plugins.loom)
 }
 
-val mod_name: String by project
-val mod_version: String by project
-val mod_id: String by project
-
-preprocess {
-    vars.put("MODERN", if (project.platform.mcMinor >= 16) 1 else 0)
-}
-
-blossom {
-    replaceToken("@VER@", mod_version)
-    replaceToken("@NAME@", mod_name)
-    replaceToken("@ID@", mod_id)
-    replaceToken("@DEBUG@", true)
-}
-
-version = mod_version
-group = "tech.thatgravyboat"
 base {
-    archivesName.set(mod_name)
+    archivesName.set(project.name.lowercase())
 }
 
-tasks.compileKotlin.setJvmDefault(if (platform.mcVersion >= 11400) "all" else "all-compatibility")
-loom.noServerRunConfigs()
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
 loom {
-    mixin.defaultRefmapName.set("mixins.${mod_id}.refmap.json")
+    runs {
+        getByName("client") {
+            vmArg("-Ddevauth.enabled=true")
+        }
+    }
 }
 
 repositories {
-    maven("https://maven.teamresourceful.com/repository/thatgravyboat/")
-    maven("https://maven.teamresourceful.com/repository/maven-private/")
-    maven("https://maven.terraformersmc.com/releases/")
-    maven("https://repo.essential.gg/repository/maven-public/")
-}
-
-val shade: Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+    maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
+    maven(url = "https://repo.hypixel.net/repository/Hypixel/")
+    maven(url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    maven(url = "https://api.modrinth.com/maven")
 }
 
 dependencies {
-    val elementa_version: String by project
-    val vigilance_version: String by project
-    val universal_version: String by project
-    val essential_version: String? by project
-    if (platform.isFabric) {
-        val fabricApiVersion: String by project
-        val fabricLanguageKotlinVersion: String by project
-        val modMenuVersion: String by project
-        modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-        modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
-        modImplementation("com.terraformersmc:modmenu:$modMenuVersion")
-        modImplementation("include"("gg.essential:elementa-${elementa_version}")!!)
-        modImplementation("include"("gg.essential:vigilance-${vigilance_version}")!!)
-        modImplementation("include"("gg.essential:universalcraft-${universal_version}")!!)
-    } else {
-        compileOnly("gg.essential:essential-${essential_version ?: platform}")
-        shade("gg.essential:loader-launchwrapper:1.1.3") {
-            isTransitive = false
-        }
-    }
+    minecraft(libs.minecraft)
+    @Suppress("UnstableApiUsage")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.21.3:2024.12.07@zip")
+    })
+    modImplementation(libs.loader)
+    modImplementation(libs.fabrickotlin)
+    modImplementation(libs.fabric)
+
+    modImplementation(libs.hypixelapi)
+    modImplementation(libs.modapi)
+    modImplementation(libs.olympus)
+    modImplementation(libs.rlib)
+
+    include(libs.hypixelapi)
+    include(libs.olympus)
+    include(libs.rlib)
+
+    modRuntimeOnly(libs.devauth)
 }
 
 tasks.processResources {
-    inputs.property("id", mod_id)
-    inputs.property("name", mod_name)
-    val java = when {
-        project.platform.mcMinor >= 21 -> 21
-        project.platform.mcMinor == 20 && project.platform.mcPatch >= 5 -> 21
-        project.platform.mcMinor >= 18 -> 17
-        project.platform.mcMinor == 17 -> 16
-        else -> 8
-    }
-    val compatLevel = "JAVA_${java}"
-    inputs.property("java", java)
-    inputs.property("java_level", compatLevel)
-    inputs.property("version", mod_version)
-    inputs.property("mcVersionStr", project.platform.mcVersionStr)
-    filesMatching(listOf("mcmod.info", "mixins.${mod_id}.json", "mods.toml")) {
-        expand(mapOf(
-            "id" to mod_id,
-            "name" to mod_name,
-            "java" to java,
-            "java_level" to compatLevel,
-            "version" to mod_version,
-            "mcVersionStr" to project.platform.mcVersionStr
-        ))
-    }
+    inputs.property("version", project.version)
+    inputs.property("minecraft_version", libs.versions.minecraft.get())
+    inputs.property("loader_version", libs.versions.loader.get())
+    filteringCharset = "UTF-8"
+
     filesMatching("fabric.mod.json") {
-        expand(mapOf(
-            "id" to mod_id,
-            "name" to mod_name,
-            "java" to java,
-            "java_level" to compatLevel,
-            "version" to mod_version,
-            "mcVersionStr" to project.platform.mcVersionStr.substringBeforeLast(".") + ".x"
-        ))
+        expand(
+            "version" to project.version,
+            "minecraft_version" to libs.versions.minecraft.get(),
+            "loader_version" to libs.versions.loader.get(),
+            "kotlin_loader_version" to libs.versions.fabrickotlin.get(),
+        )
     }
 }
 
-tasks {
-    withType<KotlinJvmCompile>().configureEach {
-        compilerOptions {
-            languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
-            apiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
-        }
-    }
-    withType(Jar::class.java) {
-        if (project.platform.isFabric) {
-            exclude("mcmod.info", "mods.toml")
-        } else {
-            exclude("fabric.mod.json", "mixins.${mod_id}.json")
-            if (project.platform.isLegacyForge) {
-                exclude("mods.toml")
-            } else {
-                exclude("mcmod.info")
-            }
-        }
-    }
-    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-        archiveClassifier.set("dev")
-        configurations = listOf(shade)
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-    remapJar {
-        input.set(shadowJar.get().archiveFile)
-        archiveClassifier.set("")
-    }
-    jar {
-        if (project.platform.isLegacyForge) {
-            manifest {
-                attributes(
-                    mapOf(
-                        "ModSide" to "CLIENT",
-                        "TweakOrder" to "0",
-                        "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
-                        "ForceLoadAsMod" to true
-                    )
-                )
-            }
-        }
-        dependsOn(shadowJar)
-        archiveClassifier.set("")
-        enabled = false
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(21)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+
+        excludeDirs.add(file("run"))
     }
 }

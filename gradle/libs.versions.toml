@@ -1,0 +1,33 @@
+[versions]
+
+# Minecraft
+minecraft = "1.21.5"
+loom = "1.10-SNAPSHOT"
+loader = "0.16.10"
+
+# Dependencies
+fabric = "0.128.1+1.21.5"
+fabrickotlin = "1.13.3+kotlin.2.1.21"
+hypixelapi = "1.0.1+build.1+mc1.21"
+olympus = "1.3.4"
+rlib = "3.5.0"
+
+# Dev Dependencies
+devauth = "1.2.1"
+
+[libraries]
+
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
+fabric = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric" }
+fabrickotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabrickotlin" }
+hypixelapi = { module = "maven.modrinth:hypixel-mod-api", version.ref = "hypixelapi" }
+modapi = { module = "net.hypixel:mod-api", version = "1.0.1" }
+olympus = { module = "earth.terrarium.olympus:olympus-fabric-1.21.5", version.ref = "olympus" }
+rlib = { module = "com.teamresourceful.resourcefullib:resourcefullib-fabric-1.21.5", version.ref = "rlib" }
+
+devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
+
+[plugins]
+
+loom = { id = "fabric-loom", version.ref = "loom" }

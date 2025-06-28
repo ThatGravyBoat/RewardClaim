@@ -1,29 +1,7 @@
-# eclipse
-eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-
-# idea
-out
-classes
-*.ipr
-*.iws
-*.iml
 .idea
-
-# gradle
-build
-.gradle
-
-#Netbeans
-.nb-gradle
-.nb-gradle-properties
-
-# other
 run
+.gradle
+build
+.kotlin
+
 .DS_Store
-Thumbs.db

@@ -1,35 +1,28 @@
 {
     "schemaVersion": 1,
-    "id": "${id}",
-    "name": "${name}",
+    "id": "rewardclaim",
     "version": "${version}",
-    "description": "Allows you to claim Hypixel rewards in-game.",
-    "authors": [
-        "ThatGravyBoat"
-    ],
-    "contact": {
-        "homepage": "https://modrinth.com/mod/rewardclaim",
-        "sources": "https://github.com/ThatGravyBoat/rewardclaim",
-        "issues": "https://github.com/ThatGravyBoat/rewardclaim/issues"
-    },
+    "name": "rewardclaim",
+    "description": "",
+    "authors": [],
+    "contact": {},
+    "license": "ARR",
+    "environment": "*",
     "entrypoints": {
         "client": [
             {
-                "adapter": "kotlin",
-                "value": "tech.thatgravyboat.rewardclaim.Initializer::init"
+                "value": "tech.thatgravyboat.rewardclaim.RewardClaimClient",
+                "adapter": "kotlin"
             }
         ]
     },
     "mixins": [
-        "mixins.rewardclaim.json"
+        "rewardclaim.mixins.json"
     ],
-    "license": "All Rights Reserved",
-    "environment": "client",
     "depends": {
-        "fabric-language-kotlin": ">=1.6.4+kotlin.1.5.30",
-        "fabricloader": ">=0.12.0",
-        "fabric-api-base": "*",
-        "minecraft": "${mcVersionStr}",
-        "java": ">=${java}"
+        "fabricloader": ">=${loader_version}",
+        "fabric-language-kotlin": ">=${kotlin_loader_version}",
+        "fabric": "*",
+        "minecraft": "${minecraft_version}"
     }
 }
