@@ -2,12 +2,18 @@
     "schemaVersion": 1,
     "id": "rewardclaim",
     "version": "${version}",
-    "name": "rewardclaim",
-    "description": "",
-    "authors": [],
-    "contact": {},
+    "name": "Reward Claim",
+    "description": "Reward Claim is a mod for Hypixel that allows you to claim your Hypixel rewards in-game rather than on their website.",
+    "icon": "reward-claim-logo.png",
+    "authors": [
+        "ThatGravyBoat"
+    ],
+    "contact": {
+        "issues": "https://github.com/meowdding/RewardClaim/issues",
+        "sources": "https://github.com/meowdding/RewardClaim"
+    },
     "license": "ARR",
-    "environment": "*",
+    "environment": "client",
     "entrypoints": {
         "client": [
             {
@@ -24,5 +30,12 @@
         "fabric-language-kotlin": ">=${kotlin_loader_version}",
         "fabric": "*",
         "minecraft": "${minecraft_version}"
+    },
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://meowdd.ing/discord"
+            }
+        }
     }
 }

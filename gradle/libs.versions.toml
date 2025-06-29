@@ -14,6 +14,7 @@ rlib = "3.5.0"
 
 # Dev Dependencies
 devauth = "1.2.1"
+modmenu = "14.0.0-rc.2"
 
 [libraries]
 
@@ -27,6 +28,7 @@ olympus = { module = "earth.terrarium.olympus:olympus-fabric-1.21.5", version.re
 rlib = { module = "com.teamresourceful.resourcefullib:resourcefullib-fabric-1.21.5", version.ref = "rlib" }
 
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
+modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 
 [plugins]
 
